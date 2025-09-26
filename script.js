@@ -114,9 +114,9 @@ function generateCertificate() {
   const certName = document.getElementById("certName");
   const certDate = document.getElementById("certDate");
 
-  // 🌟 Update certificate preview
+  // 🌟 Update certificate preview (no founder title here)
   certName.innerHTML = `${userName}`;
-  certDate.innerHTML = `Date: ${new Date().toLocaleDateString()}<br><span class="signature">Signed: Minu Antony</span><br><span style="font-size:1rem; color:#388e3c;">Founder of NeuroLens</span>`;
+  certDate.innerHTML = `Date: ${new Date().toLocaleDateString()}<br><span class="signature">Signed: Minu Antony</span>`;
   certDiv.classList.remove("hidden");
 
   // 🧾 Generate PDF using jsPDF
@@ -144,4 +144,3 @@ function generateCertificate() {
 
   doc.save(`NeuroLens_Certificate_${userName}.pdf`);
 }
-

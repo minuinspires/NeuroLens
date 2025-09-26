@@ -109,12 +109,14 @@ function drawEmpathyChart() {
 // 🎓 Certificate Generator + PDF Download
 function generateCertificate() {
   const name = document.getElementById("userName").value || "Anonymous";
+  const fullTitle = `${name}, Founder of NeuroLens`;
+
   const certDiv = document.getElementById("certificate");
   const certName = document.getElementById("certName");
   const certDate = document.getElementById("certDate");
 
   // Update certificate preview
-  certName.innerText = name;
+  certName.innerText = fullTitle;
   certDate.innerText = `Date: ${new Date().toLocaleDateString()}`;
   certDiv.classList.remove("hidden");
 
@@ -129,13 +131,11 @@ function generateCertificate() {
   doc.setFontSize(16);
   doc.text("This certifies that", 20, 50);
   doc.setFontSize(20);
-  doc.text(`${name}`, 20, 65);
-  doc.setFontSize(14);
-  doc.text("Founder of NeuroLens", 20, 75);
+  doc.text(fullTitle, 20, 65); // 👈 Your name + founder title
   doc.setFontSize(16);
-  doc.text("has contributed to the Global Thought Archive", 20, 90);
-  doc.text("by sharing a meaningful reflection through NeuroLens.", 20, 105);
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 125);
+  doc.text("has contributed to the Global Thought Archive", 20, 85);
+  doc.text("by sharing a meaningful reflection through NeuroLens.", 20, 100);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 120);
   doc.text("Signed: Minu Antony", 20, 140);
 
   doc.save(`NeuroLens_Certificate_${name}.pdf`);

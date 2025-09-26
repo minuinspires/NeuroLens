@@ -115,8 +115,8 @@ function generateCertificate() {
   const certDate = document.getElementById("certDate");
 
   // 🌟 Update certificate preview
-  certName.innerHTML = `${userName}<br><span style="font-size:1rem; color:#388e3c;">Certified by Minu Antony, Founder of NeuroLens</span>`;
-  certDate.innerText = `Date: ${new Date().toLocaleDateString()}`;
+  certName.innerHTML = `${userName}`;
+  certDate.innerHTML = `Date: ${new Date().toLocaleDateString()}<br><span class="signature">Signed: Minu Antony</span><br><span style="font-size:1rem; color:#388e3c;">Founder of NeuroLens</span>`;
   certDiv.classList.remove("hidden");
 
   // 🧾 Generate PDF using jsPDF
@@ -130,19 +130,18 @@ function generateCertificate() {
   doc.setFontSize(16);
   doc.text("This certifies that", 20, 50);
 
-  // User name on one line
   doc.setFontSize(20);
   doc.text(userName, 20, 65);
 
-  // Founder credit on separate line
-  doc.setFontSize(14);
-  doc.text("Certified by Minu Antony, Founder of NeuroLens", 20, 75);
-
   doc.setFontSize(16);
-  doc.text("has contributed to the Global Thought Archive", 20, 90);
-  doc.text("by sharing a meaningful reflection through NeuroLens.", 20, 105);
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 125);
-  doc.text("Signed: Minu Antony", 20, 140);
+  doc.text("has contributed to the Global Thought Archive", 20, 85);
+  doc.text("by sharing a meaningful reflection through NeuroLens.", 20, 100);
+
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 120);
+  doc.text("Signed: Minu Antony", 20, 135);
+  doc.setFontSize(14);
+  doc.text("Founder of NeuroLens", 20, 145);
 
   doc.save(`NeuroLens_Certificate_${userName}.pdf`);
 }
+

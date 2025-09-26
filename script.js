@@ -1,147 +1,195 @@
-const thoughtInput = document.getElementById("thoughtInput");
-const voiceBtn = document.getElementById("voiceBtn");
-const canvas = document.getElementById("thoughtCanvas");
-const ctx = canvas.getContext("2d");
+document.addEventListener("DOMContentLoaded", function () {
+  // 🌍 Initialize Leaflet Map
+  const map = L.map('map').setView([20.5937, 78.9629], 5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 19
+  }).addTo(map);
 
-const sentiment = ml5.sentiment('movieReviews', modelReady);
+  // ✅ Force Leaflet to recalculate size after layout
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 500);
+  });
 
-function modelReady() {
-  console.log("Sentiment model loaded");
-}
+  // 🎁 Add Emoji Marker with Voiceover
+  function addMapMarker(location, name, desc) {
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.length > 0) {
+          const { lat, lon } = data[0];
+          const marker = L.marker([lat, lon], {
+            icon: L.divIcon({
+              className: 'emoji-marker',
+              html: '🎁',
+              iconSize: [24, 24],
+              popupAnchor: [0, -10]
+            })
+          }).addTo(map);
 
-// 🎤 Voice Input
-voiceBtn.onclick = () => {
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = "en-IN";
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    thoughtInput.value = transcript;
-  };
-  recognition.start();
-};
+          marker.bindPopup(`<strong>${name}</strong><br>${desc}<br>${location}`).openPopup();
 
-// 🔍 Analyze Thought
-document.getElementById("analyzeBtn").onclick = () => {
-  const text = thoughtInput.value;
-  const prediction = sentiment.predict(text);
-  const score = prediction.score;
+          marker.on('click', () => {
+            const audio = new Audio('voice/kindness.mp3'); // Replace with your voice file
+            audio.play();
+          });
 
-  let emotion = score > 0.75 ? "Hopeful" : score < 0.4 ? "Heavy" : "Mixed";
-  document.getElementById("emotionResult").innerText = `🧠 Emotion: ${emotion} (${(score * 100).toFixed(1)}%)`;
-
-  detectBias(text);
-  generatePoeticResponse(emotion);
-  generateArtFromText(text);
-  drawEmpathyChart();
-};
-
-// ⚠️ Bias Detection
-function detectBias(text) {
-  const biasKeywords = ["always", "never", "everyone", "no one", "should", "must"];
-  const found = biasKeywords.filter(word => text.toLowerCase().includes(word));
-  const biasResult = found.length > 0
-    ? `⚠️ Possible cognitive bias detected: ${found.join(", ")}`
-    : `✅ No strong bias detected`;
-  document.getElementById("poeticResponse").innerText = biasResult;
-}
-
-// 🎨 Poetic Reflection
-function generatePoeticResponse(emotion) {
-  let line = "";
-  if (emotion === "Hopeful") line = "Even in shadows, your light reaches far.";
-  else if (emotion === "Heavy") line = "Your pain is valid. The world listens.";
-  else line = "You’re in between storms and sunshine—and that’s okay.";
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = emotion === "Hopeful" ? "#4caf50" : emotion === "Heavy" ? "#f44336" : "#ff9800";
-  ctx.font = "20px Quicksand";
-  ctx.fillText(line, 20, 200);
-}
-
-// 🖼️ Neural-Style Art Generation
-function generateArtFromText(text) {
-  fetch("https://api.deepai.org/api/text2img", {
-    method: "POST",
-    headers: {
-      "Api-Key": "2959c36a-0757-4f1e-af60-bae1696df91f",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ text })
-  })
-  .then(response => response.json())
-  .then(data => {
-    const img = new Image();
-    img.src = data.output_url;
-    img.width = 400;
-    document.body.appendChild(img);
-  })
-  .catch(err => console.error("Art generation failed:", err));
-}
-
-// 📊 Empathy Chart
-function drawEmpathyChart() {
-  const emotionData = {
-    Hopeful: 42,
-    Heavy: 31,
-    Mixed: 27
-  };
-
-  new Chart(document.getElementById("empathyChart"), {
-    type: 'pie',
-    data: {
-      labels: Object.keys(emotionData),
-      datasets: [{
-        data: Object.values(emotionData),
-        backgroundColor: ['#4caf50', '#f44336', '#ff9800']
-      }]
-    },
-    options: {
-      plugins: {
-        title: {
-          display: true,
-          text: 'Global Empathy Index'
+          map.flyTo([lat, lon], 6);
         }
-      }
+      });
+  }
+
+  // DOM Elements
+  const form = document.getElementById('form');
+  const itemName = document.getElementById('itemName');
+  const itemDesc = document.getElementById('itemDesc');
+  const locationInput = document.getElementById('location');
+  const itemsList = document.getElementById('items');
+  const exportBtn = document.getElementById('exportBtn');
+  const printBtn = document.getElementById('printBtn');
+  const donorNameInput = document.getElementById('donorName');
+  const noteForm = document.getElementById('noteForm');
+  const noteText = document.getElementById('noteText');
+  const notesList = document.getElementById('notesList');
+  const chatWindow = document.getElementById('chatWindow');
+  const chatInput = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const voiceBtn = document.getElementById('voiceBtn');
+  const previewName = document.getElementById('previewName');
+  const previewCount = document.getElementById('previewCount');
+  const previewDate = document.getElementById('previewDate');
+
+  let userActions = { donations: 0 };
+
+  // 🟢 Donation Submission
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = itemName.value.trim();
+    const desc = itemDesc.value.trim();
+    const loc = locationInput.value.trim();
+
+    if (name && desc && loc) {
+      const item = { name, desc, location: loc, timestamp: new Date().toLocaleString() };
+      addItemToList(item);
+      form.reset();
+      userActions.donations++;
+      updateCertificatePreview();
+      addMapMarker(loc, name, desc);
     }
   });
-}
 
-// 🎓 Certificate Generator + PDF Download
-function generateCertificate() {
-  const userName = document.getElementById("userName").value || "Anonymous";
+  // 🟢 Add Item to List
+  function addItemToList(item) {
+    const li = document.createElement('li');
+    li.innerHTML = `<strong>${item.name}</strong><br/><em>${item.desc}</em><br/>📍 ${item.location}<br/>🕒 ${item.timestamp}`;
+    itemsList.prepend(li);
+  }
 
-  const certDiv = document.getElementById("certificate");
-  const certName = document.getElementById("certName");
+  // 🧾 Certificate Export
+  exportBtn.addEventListener('click', () => {
+    const donorName = donorNameInput.value.trim() || "Anonymous";
+    const html = `
+      <html>
+      <head><title>Kindness Certificate</title></head>
+      <body style="font-family:Quicksand;text-align:center;background:#fff8dc;padding:50px;">
+        <h1 style="color:#4caf50;">🌟 Kindness Certificate 🌟</h1>
+        <p>This certifies that <strong>${donorName}</strong> has made <strong>${userActions.donations}</strong> donation(s)</p>
+        <p>Date: ${new Date().toLocaleDateString()}</p>
+        <p>Thank you for spreading kindness through <strong>KindKart</strong>!</p>
+        <div style="margin-top:40px;font-style:italic;color:#555;">
+          Signed with love,<br><strong>Minu Antony</strong><br>Founder of KindKart
+        </div>
+      </body>
+      </html>
+    `;
+    const blob = new Blob([html], { type: 'text/html' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'Kindness_Certificate.html';
+    link.click();
+  });
 
-  // 🌟 Update certificate preview
-  certName.innerHTML = `
-    <h1>🧠 NeuroLens</h1>
-    <h2>This certifies that <strong>${userName}</strong></h2>
-    <p>has contributed to the Global Thought Archive</p>
-    <p>by sharing a meaningful reflection through NeuroLens.</p>
-    <div class="date">Date: ${new Date().toLocaleDateString()}</div>
-    <div class="signature">Signed: Minu Antony</div>
-    <div style="font-style: italic; color: #388e3c;">Founder of NeuroLens</div>
-  `;
-  certDiv.classList.remove("hidden");
+  // 🖨️ Print Certificate
+  printBtn.addEventListener('click', () => {
+    const donorName = donorNameInput.value.trim() || "Anonymous";
+    const htmlContent = `
+      <html>
+        <head><title>Kindness Certificate</title></head>
+        <body style="font-family:Quicksand;text-align:center;background:#fff8dc;padding:50px;">
+          <h1 style="color:#4caf50;">🌟 Kindness Certificate 🌟</h1>
+          <p>This certifies that <strong>${donorName}</strong> has made <strong>${userActions.donations}</strong> donation(s)</p>
+          <p>Date: ${new Date().toLocaleDateString()}</p>
+          <p>Thank you for spreading kindness through <strong>KindKart</strong>!</p>
+          <div style="margin-top:40px;font-style:italic;color:#555;">
+            Signed with love,<br><strong>Minu Antony</strong><br>Founder of KindKart
+          </div>
+          <script>window.onload = function() { window.print(); }</script>
+        </body>
+      </html>
+    `;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+  });
 
-  // 🧾 Generate PDF using jsPDF
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  // 💬 Kindness Wall
+  noteForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const note = noteText.value.trim();
+    if (note) {
+      const li = document.createElement('li');
+      li.textContent = `${note} 🕒 ${new Date().toLocaleString()}`;
+      notesList.prepend(li);
+      noteText.value = '';
+    }
+  });
 
-  doc.setFont("Georgia", "bold");
-  doc.setFontSize(22);
-  doc.text("🧠 NeuroLens", 20, 30);
+  // 🤖 Chatbot Logic
+  function getBotReply(message) {
+    const msg = message.toLowerCase();
+    if (msg.includes("kindkart")) {
+      return "KindKart is a platform that turns forgotten items into acts of kindness!";
+    } else if (msg.includes("how does it work")) {
+      return "Just list an item, and KindKart helps connect it to someone who needs it.";
+    } else if (msg.includes("who made this")) {
+      return "KindKart was created by Minu Antony, an 18-year-old BTech student passionate about kindness and tech!";
+    } else {
+      return "Thanks for your message! KindKart is here to help.";
+    }
+  }
 
-  doc.setFontSize(16);
-  doc.text(`This certifies that ${userName}`, 20, 50);
-  doc.text("has contributed to the Global Thought Archive", 20, 65);
-  doc.text("by sharing a meaningful reflection through NeuroLens.", 20, 80);
+  sendBtn.addEventListener('click', () => {
+    const userMsg = chatInput.value.trim();
+    if (userMsg) {
+      const userDiv = document.createElement('div');
+      userDiv.textContent = `🗨️ You: ${userMsg}`;
+      chatWindow.appendChild(userDiv);
 
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 100);
-  doc.text("Signed: Minu Antony", 20, 115);
-  doc.setFontSize(14);
-  doc.text("Founder of NeuroLens", 20, 125);
+      const botReply = getBotReply(userMsg);
+      const botDiv = document.createElement('div');
+      botDiv.textContent = `🤖 KindKart: ${botReply}`;
+      chatWindow.appendChild(botDiv);
 
-  doc.save(`NeuroLens_Certificate_${userName}.pdf`);
-}
+      chatInput.value = '';
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+  });
+
+  voiceBtn.addEventListener('click', () => {
+    alert("🎤 Voice input activated (placeholder)");
+  });
+
+  // 🔄 Live Certificate Preview
+  donorNameInput.addEventListener('input', () => {
+    previewName.textContent = donorNameInput.value || "Anonymous";
+  });
+
+  function updateCertificatePreview() {
+    previewCount.textContent = userActions.donations;
+    previewDate.textContent = new Date().toLocaleDateString();
+  }
+
+  updateCertificatePreview();
+});

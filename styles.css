@@ -1,3 +1,4 @@
+/* 🌈 Base Styling */
 body {
   font-family: 'Quicksand', sans-serif;
   background: linear-gradient(to right, #e0f7fa, #fff3e0);
@@ -27,6 +28,7 @@ header h1 {
   color: #555;
 }
 
+/* ✍️ Input Elements */
 textarea {
   width: 80%;
   height: 100px;
@@ -37,6 +39,15 @@ textarea {
   border: 1px solid #ccc;
 }
 
+input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #aaa;
+  margin-top: 1rem;
+}
+
+/* 🟢 Buttons */
 button {
   margin: 0.5rem;
   padding: 0.7rem 1.2rem;
@@ -48,27 +59,33 @@ button {
   cursor: pointer;
 }
 
+.download-btn {
+  background-color: #2e7d32;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-top: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.download-btn:hover {
+  background-color: #1b5e20;
+}
+
+/* 🖼️ Canvas Styling */
 canvas {
   margin-top: 2rem;
   border: 2px solid #ccc;
   border-radius: 8px;
 }
 
-input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #aaa;
-  margin-top: 1rem;
+canvas#thoughtCanvas {
+  border: 3px dashed #81c784;
 }
 
-footer {
-  margin-top: 3rem;
-  font-size: 0.9rem;
-  color: #777;
-}
-
-/* Certificate Styling */
+/* 🧾 Certificate Styling */
 .certificate {
   width: 80%;
   margin: 2rem auto;
@@ -112,4 +129,16 @@ footer {
 
 .hidden {
   display: none;
+}
+
+/* 📱 Responsive Layout */
+@media (max-width: 600px) {
+  textarea, input, canvas {
+    width: 95%;
+  }
+
+  .certificate {
+    width: 95%;
+    padding: 1rem;
+  }
 }

@@ -114,9 +114,16 @@ function generateCertificate() {
   const certName = document.getElementById("certName");
   const certDate = document.getElementById("certDate");
 
-  // 🌟 Update certificate preview (no founder title here)
-  certName.innerHTML = `${userName}`;
-  certDate.innerHTML = `Date: ${new Date().toLocaleDateString()}<br><span class="signature">Signed: Minu Antony</span>`;
+  // 🌟 Update certificate preview
+  certName.innerHTML = `
+    <h1>🧠 NeuroLens</h1>
+    <h2>This certifies that <strong>${userName}</strong></h2>
+    <p>has contributed to the Global Thought Archive</p>
+    <p>by sharing a meaningful reflection through NeuroLens.</p>
+    <div class="date">Date: ${new Date().toLocaleDateString()}</div>
+    <div class="signature">Signed: Minu Antony</div>
+    <div style="font-style: italic; color: #388e3c;">Founder of NeuroLens</div>
+  `;
   certDiv.classList.remove("hidden");
 
   // 🧾 Generate PDF using jsPDF
@@ -125,22 +132,17 @@ function generateCertificate() {
 
   doc.setFont("Georgia", "bold");
   doc.setFontSize(22);
-  doc.text("🧠 NeuroLens Certificate", 20, 30);
+  doc.text("🧠 NeuroLens", 20, 30);
 
   doc.setFontSize(16);
-  doc.text("This certifies that", 20, 50);
+  doc.text(`This certifies that ${userName}`, 20, 50);
+  doc.text("has contributed to the Global Thought Archive", 20, 65);
+  doc.text("by sharing a meaningful reflection through NeuroLens.", 20, 80);
 
-  doc.setFontSize(20);
-  doc.text(userName, 20, 65);
-
-  doc.setFontSize(16);
-  doc.text("has contributed to the Global Thought Archive", 20, 85);
-  doc.text("by sharing a meaningful reflection through NeuroLens.", 20, 100);
-
-  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 120);
-  doc.text("Signed: Minu Antony", 20, 135);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 100);
+  doc.text("Signed: Minu Antony", 20, 115);
   doc.setFontSize(14);
-  doc.text("Founder of NeuroLens", 20, 145);
+  doc.text("Founder of NeuroLens", 20, 125);
 
   doc.save(`NeuroLens_Certificate_${userName}.pdf`);
 }

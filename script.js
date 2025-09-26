@@ -106,14 +106,37 @@ function drawEmpathyChart() {
   });
 }
 
-// 🎓 Certificate Generator
+// 🎓 Certificate Generator + PDF Download
 function generateCertificate() {
   const name = document.getElementById("userName").value || "Anonymous";
   const certDiv = document.getElementById("certificate");
   const certName = document.getElementById("certName");
   const certDate = document.getElementById("certDate");
 
+  // Update certificate preview
   certName.innerText = name;
   certDate.innerText = `Date: ${new Date().toLocaleDateString()}`;
   certDiv.classList.remove("hidden");
+
+  // Generate PDF using jsPDF
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFont("Georgia", "bold");
+  doc.setFontSize(22);
+  doc.text("🧠 NeuroLens Certificate", 20, 30);
+
+  doc.setFontSize(16);
+  doc.text("This certifies that", 20, 50);
+  doc.setFontSize(20);
+  doc.text(`${name}`, 20, 65);
+  doc.setFontSize(14);
+  doc.text("Founder of NeuroLens", 20, 75);
+  doc.setFontSize(16);
+  doc.text("has contributed to the Global Thought Archive", 20, 90);
+  doc.text("by sharing a meaningful reflection through NeuroLens.", 20, 105);
+  doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 125);
+  doc.text("Signed: Minu Antony", 20, 140);
+
+  doc.save(`NeuroLens_Certificate_${name}.pdf`);
 }

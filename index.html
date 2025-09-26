@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,3 +55,50 @@
   <script src="script.js"></script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuroLens 🧠</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1 class="animated-title">🧠 NeuroLens</h1>
+    <p class="tagline">Speak your mind. Watch it come alive.</p>
+  </header>
+
+  <main>
+    <textarea id="thoughtInput" placeholder="Type your thought here..."></textarea>
+    <br />
+    <button id="voiceBtn">🎤 Speak</button>
+    <button id="analyzeBtn">🔍 Analyze</button>
+
+    <section id="output">
+      <h2>🧠 AI Reflection</h2>
+      <p id="emotionResult"></p>
+      <p id="poeticResponse"></p>
+    </section>
+
+    <canvas id="thoughtCanvas" width="400" height="400"></canvas>
+
+    <h2>🌍 Global Empathy Index</h2>
+    <canvas id="empathyChart" width="400" height="400"></canvas>
+
+    <h2>🎓 Get Your Certificate</h2>
+    <input type="text" id="userName" placeholder="Enter your name" />
+    <button onclick="generateCertificate()">🎓 Generate</button>
+  </main>
+
+  <footer>
+    <p>Made with ❤️ by MinuAntony</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+>>>>>>> 31ba6b4ea08908faa8d2f9de9903ea62d666bd33

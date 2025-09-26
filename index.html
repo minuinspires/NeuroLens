@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <header>
@@ -15,46 +16,41 @@
   </header>
 
   <main>
-    <!-- Thought Input -->
     <textarea id="thoughtInput" placeholder="Type your thought here..."></textarea>
     <br />
     <button id="voiceBtn">🎤 Speak</button>
     <button id="analyzeBtn">🔍 Analyze</button>
 
-    <!-- AI Reflection Output -->
     <section id="output">
       <h2>🧠 AI Reflection</h2>
       <p id="emotionResult"></p>
       <p id="poeticResponse"></p>
     </section>
 
-    <!-- Canvas for Thought Visualization -->
     <canvas id="thoughtCanvas" width="400" height="400"></canvas>
 
-    <!-- Empathy Chart -->
     <h2>🌍 Global Empathy Index</h2>
     <canvas id="empathyChart" width="400" height="400"></canvas>
 
-    <!-- Certificate Generator -->
     <h2>🎓 Get Your Certificate</h2>
     <input type="text" id="userName" placeholder="Enter your name" />
-    <button onclick="generateCertificate()">🎓 Generate</button>
+    <button onclick="generateCertificate()">🎓 Generate & Download</button>
 
-    <!-- Certificate Display -->
     <div id="certificate" class="certificate hidden">
       <h2>🧠 NeuroLens</h2>
       <p>This certifies that</p>
       <h1 id="certName">[Name]</h1>
+      <p>Founder of NeuroLens</p>
       <p>has contributed to the</p>
       <h3>Global Thought Archive</h3>
       <p>by sharing a meaningful reflection through NeuroLens.</p>
       <p class="date" id="certDate"></p>
-      <p class="signature">Signed: MinuAntony</p>
+      <p class="signature">Signed: Minu Antony</p>
     </div>
   </main>
 
   <footer>
-    <p>Made with ❤️ by Minu Antony</p>
+    <p>Made with ❤️ by Minu Antony, Founder of NeuroLens</p>
   </footer>
 
   <script src="script.js"></script>

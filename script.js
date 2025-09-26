@@ -112,7 +112,6 @@ function generateCertificate() {
 
   const certDiv = document.getElementById("certificate");
   const certName = document.getElementById("certName");
-  const certDate = document.getElementById("certDate");
 
   // 🌟 Update certificate preview
   certName.innerHTML = `
